@@ -1,17 +1,19 @@
-use std::io::{self, Write};
+use std::{fmt::format, io::{self, Write}};
+
+use shell::{read_stdin, write_stdout};
 
 fn main() {
     loop {
-        print!("$ ");
+        write_stdout("$ ");
         io::stdout().flush().unwrap();
 
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
+        let input = read_stdin();
+        //
 
         if input.trim() == "exit" {
             break;
         }
-
-        println!("Hello there!");
+        let naive_echo = format!("$ naive echo: {}", input);
+        write_stdout(&naive_echo);
     }
 }
