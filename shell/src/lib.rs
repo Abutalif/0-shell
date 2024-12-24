@@ -1,24 +1,36 @@
 pub mod command;
-pub mod ffi;
+pub mod syscall;
 
+use std::{env, io::{self}, path::PathBuf};
 
-use std::{io::{self, Write}, process::exit};
+pub struct Shell; // so far just a unit type.
 
-pub fn read_stdin() -> String {
-    let mut input = String::new();
-    io::stdin().read_line(&mut input).unwrap(); // TODO: no unwrap()!
-    input
-}
+impl Shell {
+    pub fn new() -> Self {
+        Shell
+    }
 
-pub fn write_stdout(msg: &str) {
-    let msg_ptr = msg.as_ptr();
-    let len = msg.len();
-    let res = unsafe {ffi::write(ffi::STDOUT, msg_ptr, len)};
-    if res == -1 {
-        eprintln!("could not return ffi");
-        exit(1);
+    pub fn _execute(_line: &str) -> Result<String, io::Error> {
+        todo!()
     }
 }
 
-fn check() {
+pub fn read_stdin() -> io::Result<String> {
+    let mut input = String::new();
+    let _bytes = io::stdin().read_line(&mut input)?;
+    Ok(input)
+}
+
+pub fn write_stdout(msg: &str) -> io::Result<()> {
+    let msg_ptr = msg.as_ptr();
+    let len = msg.len();
+    let res = unsafe {syscall::write(syscall::STDOUT, msg_ptr, len)};
+    if res == -1 {
+        return Err(io::Error::last_os_error())
+    }
+    Ok(())
+}
+
+pub fn get_cwd()->io::Result<PathBuf> {
+    env::current_dir()
 }
