@@ -31,9 +31,8 @@ impl TryFrom<&str> for Command {
     type Error = io::Error;
 
     fn try_from(line: &str) -> Result<Self, Self::Error> {
-        // let command_with_params = command.split_ascii_whitespace();
         let mut commands = line.split_ascii_whitespace();
-        let command = commands.next().unwrap();
+        let command = commands.next().unwrap_or_default();
 
         let command = match command {
             "echo" => Self::Echo(Echo::new(commands.collect::<Vec<_>>().join(" "))),
