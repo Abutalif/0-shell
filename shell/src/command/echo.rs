@@ -1,16 +1,14 @@
-use crate::write_stdout;
 pub struct Echo {
-    input: String,
+    flags: Vec<String>,
 }
 
 impl Echo {
-    pub fn new(input: String) -> Self {
+    pub fn new(flags: Vec<String>) -> Self {
         Echo {
-            input
+            flags
         }
     }
-    pub fn run(&self) {
-        let _ = write_stdout(&format!("{}\n", self.input));
-        // TODO: do something with error
+    pub fn run(&self) -> String {
+        format!("{}\n", self.flags.join(" "))
     }
 }

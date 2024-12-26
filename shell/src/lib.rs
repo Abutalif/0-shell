@@ -3,24 +3,27 @@ pub mod syscall;
 
 use std::{ffi::CStr, io::{self}, path::PathBuf};
 
-use command::Command;
 use syscall::PATH_MAX;
 
 pub struct Shell {
     cwd: PathBuf,
-    _history: Vec<Command>,
+    _history: Vec<String>, //TODO: Must be Vec<String>, as it gives of exactly this
 }
 
 impl Shell {
     pub fn new() -> Self {
         Shell {
-            cwd: get_cwd().expect("Error: Could not get current working directory!"),
+            cwd: current_dir().expect("Error: Could not get current working directory!"),
             _history: Vec::new(),
         }
     }
 
     pub fn show_cwd(&self) -> String {
         self.cwd.display().to_string().to_owned()
+    }
+
+    pub fn save_command(&mut self, command: String) {
+        self._history.push(command);
     }
 }
 
@@ -40,7 +43,7 @@ pub fn write_stdout(msg: &str) -> io::Result<()> {
     Ok(())
 }
 
-fn get_cwd() -> io::Result<PathBuf> {
+fn current_dir() -> io::Result<PathBuf> {
     let mut buffer = [0i8; PATH_MAX as usize]; // might be u8
     let ptr = unsafe{syscall::getcwd(buffer.as_mut_ptr(), PATH_MAX)};
 
@@ -50,7 +53,7 @@ fn get_cwd() -> io::Result<PathBuf> {
 
     let c_str = unsafe {CStr::from_ptr(buffer.as_ptr() as *const _)};
 
-    // let c_str = CStr::from_bytes_until_nul(bytes) // TODO: check if I can you this
+    // let c_str = CStr::from_bytes_until_nul(bytes) // TODO: check if I can use this
 
     c_str.to_str()
         .map(|s| PathBuf::from(s.to_owned()))
@@ -65,7 +68,7 @@ fn get_cwd() -> io::Result<PathBuf> {
 // }
 
 // Simple
-// fn get_cwd() -> io::Result<PathBuf> {
+// fn current_dir() -> io::Result<PathBuf> {
 //     env::current_dir()
 // }
 

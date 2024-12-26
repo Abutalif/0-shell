@@ -1,14 +1,16 @@
 mod echo;
+mod pwd;
 
 use std::io;
 
 use echo::Echo;
+use pwd::Pwd;
 
 pub enum Command {
     Echo(Echo),
     Cd,
     Ls,
-    Pwd,
+    Pwd(Pwd),
     Cat,
     Cp,
     Rm,
@@ -19,11 +21,13 @@ pub enum Command {
 }
 
 impl Command {
-    pub fn run(self) {
+    // TODO: handle errors coming from each command
+    pub fn run(self)-> Option<String> {
         match self {
-            Self::Echo(echo) => echo.run(),
-            _ => (),
-        };
+            Self::Echo(echo) => Some(echo.run()),
+            Self::Pwd(pwd) => Some(pwd.run()),
+            _ => None,
+        }
     }
 }
 
@@ -35,10 +39,10 @@ impl TryFrom<&str> for Command {
         let command = commands.next().unwrap_or_default();
 
         let command = match command {
-            "echo" => Self::Echo(Echo::new(commands.collect::<Vec<_>>().join(" "))),
+            "echo" => Self::Echo(Echo::new(commands.map(|s|s.into()).collect::<Vec<_>>())),
             "cd" => Self::Cd,
             "ls" => Self::Ls,
-            "pwd" => Self::Pwd,
+            "pwd" => Self::Pwd(Pwd::new()),
             "cat" => Self::Cat,
             "cp" => Self::Cp,
             "rm" => Self::Rm,
