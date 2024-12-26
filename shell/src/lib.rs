@@ -3,15 +3,19 @@ pub mod syscall;
 
 use std::{env, io::{self}, path::PathBuf};
 
-pub struct Shell; // so far just a unit type.
+pub struct Shell {
+    cwd: PathBuf,
+}
 
 impl Shell {
     pub fn new() -> Self {
-        Shell
+        Shell {
+            cwd: get_cwd().expect("Error: Could not get current working directory!"),
+        }
     }
 
-    pub fn _execute(_line: &str) -> Result<String, io::Error> {
-        todo!()
+    pub fn show_cwd(&self) -> String {
+        self.cwd.display().to_string().to_owned()
     }
 }
 
@@ -31,6 +35,6 @@ pub fn write_stdout(msg: &str) -> io::Result<()> {
     Ok(())
 }
 
-pub fn get_cwd()->io::Result<PathBuf> {
+fn get_cwd()->io::Result<PathBuf> {
     env::current_dir()
 }
