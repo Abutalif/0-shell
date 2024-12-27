@@ -1,14 +1,16 @@
 mod echo;
 mod pwd;
+mod cd;
 
 use std::io;
 
 use echo::Echo;
 use pwd::Pwd;
+use cd::Cd;
 
 pub enum Command {
     Echo(Echo),
-    Cd,
+    Cd(Cd),
     Ls,
     Pwd(Pwd),
     Cat,
@@ -26,6 +28,7 @@ impl Command {
         match self {
             Self::Echo(echo) => Some(echo.run()),
             Self::Pwd(pwd) => Some(pwd.run()),
+            Self::Cd(cd) => {cd.run(); None}
             _ => None,
         }
     }
@@ -40,7 +43,7 @@ impl TryFrom<&str> for Command {
 
         let command = match command {
             "echo" => Self::Echo(Echo::new(commands.map(|s|s.into()).collect::<Vec<_>>())),
-            "cd" => Self::Cd,
+            "cd" => Self::Cd(Cd::new(commands.collect())),
             "ls" => Self::Ls,
             "pwd" => Self::Pwd(Pwd::new()),
             "cat" => Self::Cat,
@@ -56,3 +59,5 @@ impl TryFrom<&str> for Command {
         Ok(command)
     }
 }
+
+fn _parse_line() {}

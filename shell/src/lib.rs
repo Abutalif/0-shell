@@ -7,14 +7,14 @@ use syscall::PATH_MAX;
 
 pub struct Shell {
     cwd: PathBuf,
-    _history: Vec<String>, //TODO: Must be Vec<String>, as it gives of exactly this
+    history: Vec<String>,
 }
 
 impl Shell {
     pub fn new() -> Self {
         Shell {
             cwd: current_dir().expect("Error: Could not get current working directory!"),
-            _history: Vec::new(),
+            history: Vec::new(),
         }
     }
 
@@ -23,7 +23,7 @@ impl Shell {
     }
 
     pub fn save_command(&mut self, command: String) {
-        self._history.push(command);
+        self.history.push(command);
     }
 }
 
