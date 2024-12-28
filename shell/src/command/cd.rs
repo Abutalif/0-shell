@@ -6,10 +6,8 @@ pub struct Cd {
 }
 
 impl Cd {
-    pub fn new(dest: String) -> Self {
-        Cd {
-            dest
-        }
+    pub fn new(d: &str) -> Self {
+        Cd { dest: d.to_owned() }
     }
 
     pub fn run(&self) -> io::Result<()> {

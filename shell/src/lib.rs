@@ -1,5 +1,6 @@
 pub mod command;
 pub mod syscall;
+pub mod error;
 
 use std::{ffi::CStr, io::{self}, path::PathBuf};
 

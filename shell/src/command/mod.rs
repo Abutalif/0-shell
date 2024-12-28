@@ -1,17 +1,20 @@
 mod echo;
 mod pwd;
 mod cd;
+mod ls;
 
 use std::io;
+use std::str::FromStr;
 
 use echo::Echo;
 use pwd::Pwd;
 use cd::Cd;
+use ls::Ls;
 
 pub enum Command {
     Echo(Echo),
     Cd(Cd),
-    Ls,
+    Ls(Ls),
     Pwd(Pwd),
     Cat,
     Cp,
@@ -22,29 +25,16 @@ pub enum Command {
     Exit,
 }
 
-impl Command {
-    // TODO: handle errors coming from each command
-    pub fn run(self)-> Option<String> {
-        match self {
-            Self::Echo(echo) => Some(echo.run()),
-            Self::Pwd(pwd) => Some(pwd.run()),
-            Self::Cd(cd) => {cd.run(); None}
-            _ => None,
-        }
-    }
-}
+impl FromStr for Command {
+    type Err = io::Error;
 
-impl TryFrom<&str> for Command {
-    type Error = io::Error;
-
-    fn try_from(line: &str) -> Result<Self, Self::Error> {
-        let mut commands = line.split_ascii_whitespace();
-        let command = commands.next().unwrap_or_default();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let (command, options) = s.split_once(" ").unwrap_or((s, ""));
 
         let command = match command {
-            "echo" => Self::Echo(Echo::new(commands.map(|s|s.into()).collect::<Vec<_>>())),
-            "cd" => Self::Cd(Cd::new(commands.collect())),
-            "ls" => Self::Ls,
+            "echo" => Self::Echo(Echo::new(options)),
+            "cd" => Self::Cd(Cd::new(options)),
+            "ls" => Self::Ls(Ls::new(options)),
             "pwd" => Self::Pwd(Pwd::new()),
             "cat" => Self::Cat,
             "cp" => Self::Cp,
@@ -59,5 +49,3 @@ impl TryFrom<&str> for Command {
         Ok(command)
     }
 }
-
-fn _parse_line() {}
