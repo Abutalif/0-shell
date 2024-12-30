@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{io, path::PathBuf, str::FromStr};
 
 pub struct Ls {
     paths: Vec<PathBuf>,
@@ -11,25 +11,7 @@ enum Flag {
     Full
 }
 
-impl Ls {
-    pub fn new(input: &str) -> Self {
-        let mut flags = Vec::new();
-        let mut paths = Vec::new();
-
-        // for item in input {
-        //     if item.starts_with("-") {
-        //         flags.push(parse_flag(item)); 
-        //     } else {
-        //         paths.push(parse_dir(item));
-        //     }
-        // }
-
-        Ls {
-            flags,
-            paths,
-        }
-    }
-    
+impl Ls {    
     pub fn run(&self) {
 
     }
@@ -42,6 +24,24 @@ fn parse_flag(_input: &str) -> Flag {
 
 fn parse_dir(input: &str) -> PathBuf {
     PathBuf::from(input)
+}
+
+impl FromStr for Ls {
+    type Err = io::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        // for item in input {
+        //     if item.starts_with("-") {
+        //         flags.push(parse_flag(item)); 
+        //     } else {
+        //         paths.push(parse_dir(item));
+        //     }
+        // }
+        Ok(Ls{
+            paths: Vec::new(),
+            flags: Vec::new(),
+        })
+    }
 }
 
 

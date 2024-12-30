@@ -4,7 +4,15 @@ pub struct Echo {
 }
 
 impl Echo {
-    pub fn new(s: &str) -> Self {
-        Self {input: s.to_owned()}
+    pub fn run() {
+        
+    }
+}
+
+impl FromStr for Echo {
+    type Err = io::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Echo {input: s.to_owned()})
     }
 }

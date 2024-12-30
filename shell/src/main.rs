@@ -1,4 +1,6 @@
 
+use std::process::exit;
+
 use shell::{read_stdin, write_stdout, Shell};
 use shell::command::Command;
 
