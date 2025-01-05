@@ -17,10 +17,13 @@ fn main() {
 
         shell.save_command(input.clone());
         let command = input.parse::<Command>();
-        // if let Ok(command) = Command::try_from(input.as_str()) {
-        //     if let Some(output) = command.run() {
-        //         write_stdout(&output).expect("Oops, when printing output");
-        //     }
-        // }
+        // What the holy Fuck is this nesting?!
+        if let Ok(command) = command {
+            if let Ok(res) = command.run(&mut shell) {
+                if let Some(output) = res {
+                    write_stdout(&output).expect("Oops, when printing output")
+                }
+            }
+        }
     }
 }

@@ -25,6 +25,8 @@ use mkdir::Mkdir;
 use clear::Clear;
 use exit::Exit;
 
+use crate::Shell;
+
 pub enum Command {
     Echo(Echo),
     Cd(Cd),
@@ -43,8 +45,7 @@ impl FromStr for Command {
     type Err = io::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (command, args) = s.split_once(" ").unwrap_or((s, ""));
-
+        let (command, args) = s.trim().split_once(" ").unwrap_or((s, "")); // this leaves trailing "\n"
         let command = match command {
             "echo" => Self::Echo(args.parse()?),
             "cd" => Self::Cd(args.parse()?),
@@ -61,5 +62,15 @@ impl FromStr for Command {
         };
 
         Ok(command)
+    }
+}
+
+impl Command {
+    // TODO: add app state, consider changing return type - Option only. Consider changing inner return - String.
+    pub fn run(self, shell: &mut Shell)->io::Result<Option<String>> {
+        match self {
+            Command::Echo(echo) => echo.run().map(|output| Some(output)),
+            _ => Err(io::Error::new(io::ErrorKind::Other, "This command is yet implement."))
+        }
     }
 }

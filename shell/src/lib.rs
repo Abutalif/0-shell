@@ -28,6 +28,9 @@ impl Shell {
     }
 }
 
+// TODO: use syscall and read for special characters.
+// TODO: multicommand (e.g. pipe), allow parsing into multiple commands.
+// TODO: returning multiple parsed commands.
 pub fn read_stdin() -> io::Result<String> {
     let mut input = String::new();
     let _bytes = io::stdin().read_line(&mut input)?;
@@ -60,13 +63,6 @@ fn current_dir() -> io::Result<PathBuf> {
         .map(|s| PathBuf::from(s.to_owned()))
         .map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "Invalid UTF-8 Path"))
 }
-
-// TODO: might use this for reading from files.
-// impl Read for Shell {
-//     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-//         todo!()
-//     }
-// }
 
 // Simple
 // fn current_dir() -> io::Result<PathBuf> {
