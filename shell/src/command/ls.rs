@@ -8,13 +8,11 @@ pub struct Ls {
 enum Flag {
     List,
     All,
-    Full
+    Full,
 }
 
-impl Ls {    
-    pub fn run(&self) {
-
-    }
+impl Ls {
+    pub fn run(&self) {}
 }
 
 // TODO: do logic. return error if flag is not parsable.
@@ -32,19 +30,17 @@ impl FromStr for Ls {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         // for item in input {
         //     if item.starts_with("-") {
-        //         flags.push(parse_flag(item)); 
+        //         flags.push(parse_flag(item));
         //     } else {
         //         paths.push(parse_dir(item));
         //     }
         // }
-        Ok(Ls{
+        Ok(Ls {
             paths: Vec::new(),
             flags: Vec::new(),
         })
     }
 }
-
-
 
 // here is what happens when we call new()
 // we iterate over entries
@@ -52,4 +48,4 @@ impl FromStr for Ls {
 // if cannot be parsed into flag - return error (unsupported option),
 // if can be, parse and then push into vec
 // if it does not start with -, its a candidate for a search
-// save it into vec 
+// save it into vec

@@ -8,6 +8,6 @@ impl FromStr for Cp {
     type Err = io::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Cp {args: s.to_owned()})
+        Ok(Cp { args: s.to_owned() })
     }
 }

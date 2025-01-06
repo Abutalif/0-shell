@@ -1,8 +1,7 @@
-
 use std::process::exit;
 
-use shell::{read_stdin, write_stdout, Shell};
 use shell::command::Command;
+use shell::{read_stdin, write_stdout, Shell};
 
 fn main() {
     let mut shell = Shell::new();
@@ -19,16 +18,16 @@ fn main() {
         let command = input.parse::<Command>();
         // What the holy Fuck is this nesting?!
         if let Ok(command) = command {
-            if let Ok(res) = command.run(&mut shell) {
-                if let Some(output) = res {
-                    write_stdout(&output).expect("Oops, when printing output")
+            match command.run(&mut shell) {
+                Ok(value) => {
+                    if let Some(output) = value {
+                        write_stdout(&output).expect("Oops, when printing output")
+                    }
                 }
-            } else {
-                println!("we don't have value in that commmand");
+                Err(err) => {
+                    write_stdout(&(err.to_string() + "\n")).expect("Cannot write into stdout")
+                }
             }
-
-        } else {
-            println!("command did not parse");
         }
     }
 }

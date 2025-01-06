@@ -1,8 +1,12 @@
 pub mod command;
-pub mod syscall;
 pub mod error;
+pub mod syscall;
 
-use std::{ffi::CStr, io::{self}, path::PathBuf};
+use std::{
+    ffi::CStr,
+    io::{self},
+    path::PathBuf,
+};
 
 use syscall::PATH_MAX;
 
@@ -40,26 +44,27 @@ pub fn read_stdin() -> io::Result<String> {
 pub fn write_stdout(msg: &str) -> io::Result<()> {
     let msg_ptr = msg.as_ptr();
     let len = msg.len();
-    let res = unsafe {syscall::write(syscall::STDOUT, msg_ptr, len)};
+    let res = unsafe { syscall::write(syscall::STDOUT, msg_ptr, len) };
     if res == -1 {
-        return Err(io::Error::last_os_error())
+        return Err(io::Error::last_os_error());
     }
     Ok(())
 }
 
 fn current_dir() -> io::Result<PathBuf> {
     let mut buffer = [0i8; PATH_MAX as usize]; // might be u8
-    let ptr = unsafe{syscall::getcwd(buffer.as_mut_ptr(), PATH_MAX)};
+    let ptr = unsafe { syscall::getcwd(buffer.as_mut_ptr(), PATH_MAX) };
 
     if ptr.is_null() {
         return Err(io::Error::last_os_error());
     }
 
-    let c_str = unsafe {CStr::from_ptr(buffer.as_ptr() as *const _)};
+    let c_str = unsafe { CStr::from_ptr(buffer.as_ptr() as *const _) };
 
     // let c_str = CStr::from_bytes_until_nul(bytes) // TODO: check if I can use this
 
-    c_str.to_str()
+    c_str
+        .to_str()
         .map(|s| PathBuf::from(s.to_owned()))
         .map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "Invalid UTF-8 Path"))
 }

@@ -1,3 +1,3 @@
 pub enum _Error {
-    InvaludInput
+    InvaludInput,
 }
