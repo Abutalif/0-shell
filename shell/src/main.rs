@@ -23,7 +23,12 @@ fn main() {
                 if let Some(output) = res {
                     write_stdout(&output).expect("Oops, when printing output")
                 }
+            } else {
+                println!("we don't have value in that commmand");
             }
+
+        } else {
+            println!("command did not parse");
         }
     }
 }

@@ -45,12 +45,12 @@ impl FromStr for Command {
     type Err = io::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (command, args) = s.trim().split_once(" ").unwrap_or((s, "")); // this leaves trailing "\n"
+        let (command, args) = s.trim().split_once(" ").unwrap_or((s.trim(), ""));
         let command = match command {
             "echo" => Self::Echo(args.parse()?),
             "cd" => Self::Cd(args.parse()?),
             "ls" => Self::Ls(args.parse()?),
-            "pwd" => Self::Pwd(args.parse()?),
+            "pwd" => Self::Pwd(args.parse()?), 
             "cat" => Self::Cat(args.parse()?),
             "cp" => Self::Cp(args.parse()?),
             "rm" => Self::Rm(args.parse()?),
@@ -66,11 +66,32 @@ impl FromStr for Command {
 }
 
 impl Command {
-    // TODO: add app state, consider changing return type - Option only. Consider changing inner return - String.
     pub fn run(self, shell: &mut Shell)->io::Result<Option<String>> {
         match self {
             Command::Echo(echo) => echo.run().map(|output| Some(output)),
+            Command::Pwd(pwd) => Ok(Some(pwd.run(&shell.cwd))),
             _ => Err(io::Error::new(io::ErrorKind::Other, "This command is yet implement."))
         }
     }
+}
+
+// not there yet. we need it in the future. it will wok
+fn tokenize(input: &str) -> Vec<String> {
+    let mut res = Vec::new();
+    let mut token = String::new();
+    
+    for x in input.chars() {
+        if x != ' ' {
+            token.push(x);
+        } else {
+            res.push(token.clone());
+            token.clear();
+        }
+    }
+    
+    if !token.is_empty() {
+        res.push(token);
+    }
+    // hello there "friend"
+    res
 }

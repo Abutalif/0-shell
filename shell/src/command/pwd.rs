@@ -1,4 +1,4 @@
-use std::{io, str::FromStr};
+use std::{io, path::PathBuf, str::FromStr};
 
 use crate::current_dir;
 
@@ -7,8 +7,8 @@ pub struct Pwd {
 }
 
 impl Pwd {
-    pub fn run(&self) -> String {
-        format!("{}\n", current_dir().unwrap_or_default().display().to_string())
+    pub fn run(&self, cwd: &PathBuf) -> String {
+        cwd.display().to_string() + "\n"
     }
 }
 

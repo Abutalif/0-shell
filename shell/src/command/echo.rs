@@ -23,24 +23,3 @@ impl FromStr for Echo {
         Ok(Echo {input, with_nl})
     }
 }
-
-// not there yet. we need it in the future. it will wok
-fn tokenize(input: &str) -> Vec<String> {
-    let mut res = Vec::new();
-    let mut token = String::new();
-    
-    for x in input.chars() {
-        if x != ' ' {
-            token.push(x);
-        } else {
-            res.push(token.clone());
-            token.clear();
-        }
-    }
-    
-    if !token.is_empty() {
-        res.push(token);
-    }
-    // hello there "friend"
-    res
-}
